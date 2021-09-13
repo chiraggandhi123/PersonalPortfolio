@@ -10,10 +10,10 @@ function AboutCard() {
         <blockquote className="blockquote mb-0">
           <p style={{ textAlign: "justify" }}>
             Hi Everyone, I am <span className="purple">Chirag Gandhi </span>
-            from <span className="purple"> Faridabad, India.</span>
-            <br />I am pursuing by Bachelors in Information Technology from Bharati Vidyapeeth's college of Engineering,
-            &nbsp;New Delhi.
+            from Faridabad, India.
+            <br />I have completed my <span className="purple">bachelors</span> from <span className="purple">BVCOE, New Delhi</span> in <span className="purple">Information Technology.</span>
             <br />
+            I am working full-time as a <span className="purple">MERN developer at TO THE NEW.</span>
             <br />
             Apart from coding, some other activities that I love to do!
           </p>
