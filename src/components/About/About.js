@@ -36,34 +36,54 @@ function About() {
           </Col>
         </Row>
         <h1 className="project-heading">
-          Professional <strong className="purple">Skillset </strong>
+          <strong className="purple">Languages</strong>
         </h1>
         <Row style={{ justifyContent: "center", paddingBottom: "50px" }}>
           <Techstack iconName="devicon-cplusplus-line" />
           <Techstack iconName="devicon-javascript-plain " />
           <Techstack iconName="devicon-python-plain-wordmark " />
+        </Row>
+        <h1 className="project-heading">
+          <strong className="purple">Tools and Technologies</strong>
+        </h1>
+        <Row>
           <Techstack iconName="devicon-nodejs-plain-wordmark " />
           <Techstack iconName="devicon-express-original-wordmark" />
           <Techstack iconName="devicon-react-original-wordmark" />
+          <Techstack iconName="devicon-redux-plain " />
+          <Techstack iconName="devicon-jquery-plain-wordmark " />
           <Techstack iconName="devicon-mongodb-plain-wordmark" />
-          <Techstack iconName="devicon-git-plain-wordmark" />
           <Techstack iconName="devicon-bootstrap-plain-wordmark" />
-          
-          {/* <Techstack iconName="cib-pytorch" /> */}
-          <Techstack iconName="cib-tensorflow" />
+          <Techstack iconName="devicon-handlebars-plain-wordmark " />
+          <Techstack iconName="devicon-html5-plain-wordmark " />
+          <Techstack iconName="devicon-css3-plain-wordmark " />
+          <Techstack iconName="cib-visual-studio-code" />
+          <Techstack iconName="cib-postman" />
 
         </Row>
         <h1 className="project-heading">
-          <strong className="purple">Tools</strong> I use
+          <strong className="purple">Version Control</strong>
         </h1>
         <Row style={{ justifyContent: "center", paddingBottom: "50px" }}>
-          <Techstack iconName="devicon-linux-plain" />
-          <Techstack iconName="cib-visual-studio-code" />
-          {/* <Techstack iconName="cib-anaconda" /> */}
-          <Techstack iconName="cib-postman" />
-          <Techstack iconName="cib-sublime-text" />
-          {/* <Techstack iconName="cib-zeit" /> */}
-          <Techstack iconName="cib-heroku" />
+          <Techstack iconName="devicon-git-plain-wordmark" />
+          <Techstack iconName="devicon-gitlab-plain-wordmark" />
+          <Techstack iconName="devicon-bitbucket-plain-wordmark" />
+          <Techstack iconName="devicon-jira-plain-wordmark" />
+
+        </Row>
+        <h1 className="project-heading">
+          <strong className="purple">Familiar with</strong>
+        </h1>
+        <Row style={{ justifyContent: "center", paddingBottom: "50px" }}>
+          <Techstack iconName="devicon-tensorflow-original" />
+          <Techstack iconName="devicon-flask-plain-wordmark" />
+          <Techstack iconName="devicon-jupyter-plain-wordmark" />
+          <Techstack iconName="devicon-numpy-original-wordmark" />
+          <Techstack iconName="devicon-postgresql-plain-wordmark" />
+          <Techstack iconName="devicon-postgresql-plain-wordmark" />          
+          
+          
+
         </Row>
         {/* <Github /> */}
       </Container>
