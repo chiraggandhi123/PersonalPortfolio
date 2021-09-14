@@ -17,6 +17,10 @@ function ProjectCards(props) {
           <i className="cil-external-link">&nbsp;</i>
           {props.isBlog ? "View Blog" : "View Project"}
         </Button>
+        &nbsp;&nbsp;
+        <Button variant="primary" href={props.github_link} target="_blank">
+          <i className="fab fa-github">&nbsp;</i>
+        </Button>
       </Card.Body>
     </Card>
   );
