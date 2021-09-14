@@ -454,7 +454,9 @@ html {
   padding-right: 25px !important;
   height: auto !important;
 }
-
+.img-style{
+  border-radius: 25px;
+}
 .project-card-view {
   box-shadow: 0 4px 5px 3px rgba(119, 53, 136, 0.459) !important;
   color: white !important;
