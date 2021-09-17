@@ -42,6 +42,15 @@ function Resume() {
           <Col md={6} className="resume-left">
             <h3 className="resume-title">Experience</h3>
             <Resumecontent
+              title="Software Developer"
+              company="To The New"
+              date="February 2020 - Present"
+              content={[
+                `Project-1 : RocketFuel BlockChain, is global payments processing company offering highly efficient 1-click check-out solutions using Bitcoin, other cryptocurrencies and Bank transfers.\n I was working as a fullstack dev in this project. My role was to deliver effecient and reusable components using Vue.js and apart from this creating new API's using hapi.js, resolving bugs, delivering production ready code.`,
+                "Project-2 : PWC, Pricehouse WaterCoopers is one of the biggest accounting firms in the world,\n I was the part of the backend team and main job was to write the immense amout of data into excel sheets, create worker jobs, create reports structure, formatting reports etc.",
+              ]}
+            />
+            <Resumecontent
               title="Teaching Assistant"
               company="Coding Blocks"
               date="November 2019 - April 2020"
@@ -57,18 +66,7 @@ function Resume() {
                 "The position involved mentoring the school going students (13-17) years of age to introduce them to open source and giving them the opportu-nity to become part of the open source community by working on real-world software projects, supported by an international community to help them learn and succeed"
               ]}
             />
-            <Resumecontent
-              title="Competitive Programming Head"
-              company="Developer Students Club"
-              date="Apr 2018 - Apr 2020"
-              content={[
-                `I worked in this association for a long time. In the principal year, I was
-                an RNIS official, where I used to show understudies equipment and
-                robots. Later I filled in as a serious Programming top of this general
-                public, where we used to have programming challenges and hold work-
-                shops on advanced programming.`
-              ]}
-            />
+            
             
           </Col>
           <Col md={6} className="resume-right">
@@ -77,7 +75,7 @@ function Resume() {
               title="Bachleors in Information Technology [BVCOE]"
           
               date="2017 - Present"
-              content={[`CGPA: ${8.6} (Till ${6}th Sem)`]}
+              content={[`CGPA: ${8.776}`]}
             />
             <Resumecontent
               title="12TH BOARD [ CBSE, MVN(faridabad) ]"
