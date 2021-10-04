@@ -80,7 +80,6 @@ function About() {
           <Techstack iconName="devicon-jupyter-plain-wordmark" />
           <Techstack iconName="devicon-numpy-original-wordmark" />
           <Techstack iconName="devicon-postgresql-plain-wordmark" />
-          <Techstack iconName="devicon-postgresql-plain-wordmark" />          
           
           
 
