@@ -1,0 +1,8 @@
+{
+  "label": "4 · Retrieval (RAG)",
+  "position": 14,
+  "link": {
+    "type": "generated-index",
+    "slug": "/rag"
+  }
+}

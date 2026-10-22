@@ -1,0 +1,83 @@
+.tree {
+  display: grid;
+  gap: 22px;
+}
+
+.notes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  column-gap: 40px;
+}
+
+@media (min-width: 768px) {
+  .notes {
+    columns: 2;
+  }
+}
+
+.notes li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 5px 0;
+  break-inside: avoid;
+}
+
+.notes li::before {
+  content: '';
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  transform: translateY(-1px);
+}
+
+.written::before {
+  background: var(--brand-orange);
+}
+
+.soon::before {
+  border: 1.5px solid var(--ifm-color-emphasis-400);
+}
+
+.notes a {
+  color: var(--ifm-font-color-base);
+  font-size: 0.97rem;
+  line-height: 1.45;
+}
+
+.soon a {
+  color: var(--ifm-color-emphasis-700);
+}
+
+.notes a:hover {
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+
+.group {
+  padding-top: 6px;
+}
+
+.groupLabel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 11.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary);
+}
+
+.groupLabel span {
+  color: var(--ifm-color-emphasis-600);
+  letter-spacing: 0.1em;
+}
+
+.group .group {
+  padding-left: 16px;
+  border-left: 1px solid var(--brand-line);
+}

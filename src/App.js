@@ -1,38 +1,50 @@
-import "./App.css";
-import React, { useState, useEffect } from "react";
-import Preloader from "../src/components/Pre";
-import Navbar from "./components/Navbar";
-import Home from "./components/Home/Home";
-import About from "./components/About/About";
-import Projects from "./components/Projects/Projects";
-// import Footer from "./components/Footer";
-import Resume from "./components/Resume/Resume";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import "./style.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import ScrollToTop from "./components/ScrollToTop";
-function App() {
-  const [load, upadateLoad] = useState(true);
+import React, { useEffect, useState } from "react";
+import "./site/site.css";
+import { Nav, Hero } from "./site/Hero";
+import { About, Stack, Experience, Featured, Projects, Awards, Education, Contact } from "./site/Sections";
+
+function ScrollProgress() {
+  const [progress, setProgress] = useState(0);
+
   useEffect(() => {
-    setTimeout(() => {
-      upadateLoad(false);
-    }, 1200);
+    let frame = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        setProgress(max > 0 ? window.scrollY / max : 0);
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
+
+  return <div className="progress" style={{ transform: `scaleX(${progress})` }} aria-hidden="true" />;
+}
+
+function App() {
   return (
-    <Router>
-      <Preloader load={load} />
-      <div className="App" id={load ? "no-scroll" : "scroll"}>
-        <Navbar />
-        <ScrollToTop />
-        <Switch>
-          <Route path="/" exact component={Home} />
-          <Route path="/project" component={Projects} />
-          <Route path="/about" component={About} />
-          <Route path="/resume" component={Resume} />
-        </Switch>
-        {/* <Footer /> */}
-      </div>
-    </Router>
+    <>
+      <ScrollProgress />
+      <Nav />
+      <main>
+        <Hero />
+        <About />
+        <Stack />
+        <Experience />
+        <Featured />
+        <Projects />
+        <Awards />
+        <Education />
+        <Contact />
+      </main>
+    </>
   );
 }
 

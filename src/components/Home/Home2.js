@@ -31,7 +31,7 @@ function Home2() {
                 </b>
               </i>
               &nbsp;like&nbsp;
-              
+
               <i>
                 <b className="purple">
                   React.js and Node.js
@@ -42,7 +42,7 @@ function Home2() {
               <i>
                 <b className="purple"> Machine Learning and Deep Learning &nbsp;</b>
               </i>
-              
+
             </p>
           </Col>
           <Col md={4} className="myAvtar">
@@ -80,7 +80,7 @@ function Home2() {
               </li>
               <li className="social-icons">
                 <a
-                  href="https://www.linkedin.com/in/chirag-gandhi-7642b3b2/"
+                  href="https://www.linkedin.com/in/chiraggandhi123/"
                   target="_blank"
                   rel="noreferrer"
                   className="icon-colour  home-social-icons"

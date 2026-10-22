@@ -1,0 +1,10 @@
+node_modules/
+build/
+.eslintcache
+.DS_Store
+.env
+.env.*
+.vercel
+.playwright-mcp/
+Server/config.js
+npm-debug.log*
