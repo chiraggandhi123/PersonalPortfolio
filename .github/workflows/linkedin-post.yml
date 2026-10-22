@@ -1,42 +1,41 @@
-# Every morning, drafts a LinkedIn post from the notes pushed in the last 24h
-# and opens it as an issue (with an @mention, so the GitHub app notifies you).
-# Nothing is posted to LinkedIn: copy the text from the issue, post it, close the issue.
+# Every morning, drafts a LinkedIn post about the next written note (one note
+# per day, in roadmap order) and opens it as an issue with an @mention, so the
+# GitHub app notifies you. Nothing is posted to LinkedIn: copy the text from the
+# issue, post it, close the issue. linkedin-posts/posted.json tracks what's done.
+# If every written note is already posted, you get a "write your next note" issue instead.
 name: Daily LinkedIn post draft
 
 on:
   schedule:
     - cron: '30 3 * * *'   # 03:30 UTC = 09:00 IST
   workflow_dispatch:
-    inputs:
-      hours:
-        description: 'Look back this many hours'
-        default: '24'
 
 permissions:
-  contents: read
+  contents: write          # commit linkedin-posts/posted.json
   issues: write
+
+concurrency: linkedin-post
 
 jobs:
   draft:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0          # full history: the script reads git log
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
 
       - name: Draft post
-        run: node scripts/linkedin-post.mjs --hours "${{ inputs.hours || '24' }}" --out post.md
+        run: node scripts/linkedin-post.mjs --out post.md
 
       - name: Open review issue
         if: hashFiles('post.md') != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           DAY=$(node -p "require('./post.md.meta.json').day")
+          TITLE=$(node -p "require('./post.md.meta.json').title")
           {
             echo "@${{ github.repository_owner }} your LinkedIn draft is ready. Edit if you like, post it, then close this issue."
             echo
@@ -45,7 +44,23 @@ jobs:
             cat post.md
           } > body.md
           gh label create linkedin-post --color 0A66C2 --description "Daily LinkedIn draft" 2>/dev/null || true
-          gh issue create \
-            --title "LinkedIn post · Day $DAY · $(TZ=Asia/Kolkata date '+%d %b')" \
-            --label linkedin-post \
-            --body-file body.md
+          gh issue create --title "LinkedIn · Day $DAY · $TITLE" --label linkedin-post --body-file body.md
+
+      - name: Record posted note
+        if: hashFiles('post.md') != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add linkedin-posts/posted.json
+          git commit -m "LinkedIn: record Day $(node -p "require('./post.md.meta.json').day")"
+          git push
+
+      - name: Remind to write the next note
+        if: hashFiles('post.md.reminder.md') != ''
+        run: |
+          gh label create note-reminder --color FBCA04 --description "Next note to write" 2>/dev/null || true
+          # Keep only one open reminder.
+          gh issue list --label note-reminder --state open --json number --jq '.[].number' \
+            | xargs -r -n1 gh issue close
+          { echo "@${{ github.repository_owner }} no new note to post today."; echo; cat post.md.reminder.md; } > body.md
+          gh issue create --title "Write your next note" --label note-reminder --body-file body.md

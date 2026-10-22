@@ -1,14 +1,19 @@
 #!/usr/bin/env node
-// Drafts a "learning AI in public" LinkedIn post from the notes committed in
-// the last N hours. It never posts anything: the daily GitHub Action
+// Drafts a "learning AI in public" LinkedIn post, one note per day.
+//
+// Notes are posted in roadmap order. linkedin-posts/posted.json records which
+// notes have been posted, so each run takes the next written note that hasn't
+// been posted yet. It never posts anything itself: the daily GitHub Action
 // (.github/workflows/linkedin-post.yml) puts the draft in an issue for review.
 //
-//   node scripts/linkedin-post.mjs                 # notes committed in the last 24h
-//   node scripts/linkedin-post.mjs --hours 48      # widen the window
-//   node scripts/linkedin-post.mjs --out post.md   # write to a file instead of stdout
-//   node scripts/linkedin-post.mjs --clip          # also copy to the clipboard (macOS)
+//   node scripts/linkedin-post.mjs                # next note → post.md, record it
+//   node scripts/linkedin-post.mjs --count 4      # next 4 notes in one post
+//   node scripts/linkedin-post.mjs --dry          # print only, record nothing
+//   node scripts/linkedin-post.mjs --out post.md  # write the post to a file
+//   node scripts/linkedin-post.mjs --clip         # also copy to clipboard (macOS)
 //
-// Prints nothing and writes no file when no notes were written in the window.
+// When every written note has been posted, writes a reminder naming the next
+// note to write (to <out>.reminder.md) instead of a post.
 // A note counts as written once its front matter no longer has `sidebar_class_name: soon`.
 
 import fs from 'node:fs';
@@ -18,10 +23,11 @@ import {fileURLToPath} from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DOCS = path.join(ROOT, 'notes', 'docs');
+const STATE_FILE = path.join(ROOT, 'linkedin-posts', 'posted.json');
 const SITE = 'https://chiraggandhi-notes.vercel.app';
 const ROADMAP = `${SITE}/roadmap`;
-const TZ = 'Asia/Kolkata';
 const MAX_BULLETS = 6;
+const SKIP_HEADINGS = /^(TL;DR|Key terms|Interview quick-fire|Checklist|Next steps|Setup|Goal|What I learned)/i;
 
 const HOOKS = [
   'Day {day} of learning AI in public 🚀',
@@ -40,12 +46,11 @@ const HASHTAGS = '#AI #LearningInPublic #GenerativeAI #LLM #AIEngineering';
 
 const args = process.argv.slice(2);
 const opt = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
-const hours = Number(opt('--hours') ?? 24);
+const count = Number(opt('--count') ?? 1);
 const outFile = opt('--out');
+const dry = args.includes('--dry');
 
-const git = (...a) => execFileSync('git', a, {cwd: ROOT, encoding: 'utf8', env: {...process.env, TZ}});
-
-// ---------- notes on disk ----------
+// ---------- read notes ----------
 const stripPrefix = (s) => s.replace(/^\d+-/, '');
 
 function frontMatter(src) {
@@ -57,27 +62,31 @@ function frontMatter(src) {
   return fm;
 }
 
-function readNote(relFromRoot) {
-  const file = path.join(ROOT, relFromRoot);
-  const rel = path.relative(DOCS, file);
-  // Only notes inside a stage folder (skip intro, roadmap, glossary...).
-  if (!fs.existsSync(file) || !rel.includes(path.sep) || !file.endsWith('.md')) return null;
-  const src = fs.readFileSync(file, 'utf8');
-  const fm = frontMatter(src);
-  if (!fm.title || /^sidebar_class_name:\s*soon/m.test(src)) return null;
-  return {file, rel, src, fm};
-}
-
 const plain = (md) =>
   md.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*_`>#]/g, '').replace(/\s+/g, ' ').trim();
 
-// First sentence of the note's "## TL;DR" section, if it has one.
-function takeaway(src) {
-  const m = src.match(/##\s*TL;DR\s*\n+([\s\S]*?)(\n##|\n```|$)/);
-  if (!m) return null;
-  const text = plain(m[1].split(/\n\s*\n/)[0].replace(/^[-*]\s+/gm, ''));
-  const sentence = text.match(/^.*?[.!?](\s|$)/)?.[0].trim() ?? text;
-  return sentence.length > 160 ? `${sentence.slice(0, 157).trimEnd()}…` : sentence;
+const clip = (s, n) => (s.length > n ? `${s.slice(0, n - 1).trimEnd()}…` : s);
+
+function section(src, heading) {
+  return src.match(new RegExp(`##\\s*${heading}\\s*\\n+([\\s\\S]*?)(\\n## |$)`))?.[1] ?? null;
+}
+
+// First paragraph of "## TL;DR" (code blocks dropped).
+function tldr(src) {
+  const body = section(src, 'TL;DR');
+  if (!body) return null;
+  return plain(body.replace(/```[\s\S]*?```/g, '').split(/\n\s*\n/)[0].replace(/^[-*]\s+/gm, ''));
+}
+
+const firstSentence = (text) => text?.match(/^.*?[.!?](\s|$)/)?.[0].trim() ?? text;
+
+function interviewQ(src) {
+  const line = section(src, 'Interview quick-fire')?.match(/^- \*\*"?(.+?)"?\*\*\s*→\s*(.+)$/m);
+  return line ? {q: plain(line[1]), a: clip(plain(line[2]), 220)} : null;
+}
+
+function headings(src) {
+  return [...src.matchAll(/^## (.+)$/gm)].map((m) => plain(m[1])).filter((h) => !SKIP_HEADINGS.test(h));
 }
 
 function stageLabel(rel) {
@@ -89,65 +98,103 @@ function stageLabel(rel) {
   }
 }
 
-// ---------- what changed, from git ----------
-const changedPaths = (sinceArg) =>
-  [...new Set(git('log', `--since=${sinceArg}`, '--name-only', '--pretty=format:', '--', 'notes/docs').split('\n'))]
-    .filter(Boolean);
+const url = (n) =>
+  n.fm.slug ? SITE + `/${n.fm.slug.replace(/^\//, '')}` : `${SITE}/${n.rel.replace(/\.md$/, '').split(path.sep).map(stripPrefix).join('/')}`;
 
-const fresh = changedPaths(`${hours} hours ago`)
-  .map(readNote)
-  .filter(Boolean)
-  .sort((a, b) => a.rel.localeCompare(b.rel));
+// Every note inside a stage folder, in roadmap order.
+const notes = fs
+  .readdirSync(DOCS, {recursive: true})
+  .filter((p) => p.endsWith('.md') && p.includes(path.sep))
+  .sort((a, b) => a.localeCompare(b))
+  .map((rel) => {
+    const src = fs.readFileSync(path.join(DOCS, rel), 'utf8');
+    return {rel, src, fm: frontMatter(src), written: !/^sidebar_class_name:\s*soon/m.test(src)};
+  })
+  .filter((n) => n.fm.title);
 
-if (fresh.length === 0) {
-  console.error(`No notes written in the last ${hours}h. No post.`);
+let state = {posts: []};
+try {
+  state = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'));
+} catch {}
+const posted = new Set(state.posts.flatMap((p) => p.notes));
+
+const queue = notes.filter((n) => n.written && !posted.has(n.rel));
+const batch = queue.slice(0, count);
+const nextUp = queue[count] ?? notes.find((n) => !n.written);
+const writtenCount = notes.filter((n) => n.written).length;
+
+// ---------- nothing to post: remind which note to write ----------
+if (batch.length === 0) {
+  const next = notes.find((n) => !n.written);
+  const msg = next
+    ? `Every written note has been posted. Next note to write: **${next.fm.title}** (\`notes/docs/${next.rel}\`).\n\nWrite it, delete the \`sidebar_class_name: soon\` line, push, and tomorrow's post will cover it.`
+    : 'Every note on the roadmap is written and posted. 🎉';
+  if (outFile) fs.writeFileSync(`${outFile}.reminder.md`, msg + '\n');
+  console.error(msg);
   process.exit(0);
 }
 
-// Day N = number of distinct days (IST) with a commit that touched notes.
-const day = new Set(
-  git('log', '--date=format-local:%Y-%m-%d', '--pretty=%cd', '--', 'notes/docs').split('\n').filter(Boolean),
-).size;
-
-const all = fs
-  .readdirSync(DOCS, {recursive: true})
-  .filter((p) => p.endsWith('.md') && p.includes(path.sep))
-  .map((p) => fs.readFileSync(path.join(DOCS, p), 'utf8'))
-  .filter((src) => frontMatter(src).title);
-const written = all.filter((src) => !/^sidebar_class_name:\s*soon/m.test(src)).length;
-
 // ---------- build the post ----------
+const day = state.posts.length + 1;
 const pick = (list) => list[(day - 1) % list.length];
-const stages = [...new Set(fresh.map((n) => stageLabel(n.rel)).filter(Boolean))];
-const stageDirs = new Set(fresh.map((n) => n.rel.split(path.sep)[0]));
-const notesUrl = stageDirs.size === 1 ? `${SITE}/${stripPrefix([...stageDirs][0])}` : SITE;
+const hook = pick(HOOKS).replace('{day}', day);
+const progress = `📈 Progress: ${writtenCount}/${notes.length} notes written.`;
+const next = nextUp ? `\n⏭️ Next up: ${nextUp.fm.title}\n` : '';
 
-const bullets = fresh.slice(0, MAX_BULLETS).map((n) => {
-  const t = takeaway(n.src);
-  return `• ${n.fm.title}${t ? `\n   ↳ ${t}` : ''}`;
-});
-if (fresh.length > MAX_BULLETS) bullets.push(`• …and ${fresh.length - MAX_BULLETS} more`);
+let post;
+if (batch.length === 1) {
+  const [n] = batch;
+  const covered = headings(n.src).slice(0, 5).map((h) => `• ${h}`).join('\n');
+  const iq = interviewQ(n.src);
+  post = `${hook}
 
-const post = `${pick(HOOKS).replace('{day}', day)}
+Today's topic: ${n.fm.title}
 
-Yesterday I worked through ${stages.length ? stages.join(' + ') : 'a few topics'} and turned it into notes:
+${clip(tldr(n.src) ?? '', 400)}
+${covered ? `\nWhat I covered:\n${covered}\n` : ''}${iq ? `\n💡 An interview question I can now answer:\n"${iq.q}"\n→ ${iq.a}\n` : ''}
+✍️ Full notes (free to read): ${url(n)}
+🗺️ The roadmap I'm following, Python → LLMs → RAG → Agents → AgentOps: ${ROADMAP}
+
+${progress}${next}
+${pick(CLOSERS)}
+
+${HASHTAGS}
+`;
+} else {
+  const stages = [...new Set(batch.map((n) => stageLabel(n.rel)).filter(Boolean))];
+  const stageDirs = new Set(batch.map((n) => n.rel.split(path.sep)[0]));
+  const notesUrl = stageDirs.size === 1 ? `${SITE}/${stripPrefix([...stageDirs][0])}` : SITE;
+  const bullets = batch.slice(0, MAX_BULLETS).map((n) => {
+    const t = firstSentence(tldr(n.src));
+    return `• ${n.fm.title}${t ? `\n   ↳ ${clip(t, 160)}` : ''}`;
+  });
+  if (batch.length > MAX_BULLETS) bullets.push(`• …and ${batch.length - MAX_BULLETS} more`);
+  post = `${hook}
+
+Today I worked through ${stages.length ? stages.join(' + ') : 'a few topics'} and turned it into notes:
 
 ${bullets.join('\n')}
 
 ✍️ My notes (free to read): ${notesUrl}
 🗺️ The roadmap I'm following, Python → LLMs → RAG → Agents → AgentOps: ${ROADMAP}
 
-📈 Progress: ${written}/${all.length} notes written.
-
+${progress}${next}
 ${pick(CLOSERS)}
 
 ${HASHTAGS}
 `;
+}
 
+// ---------- output ----------
 if (outFile) {
   fs.writeFileSync(outFile, post);
-  fs.writeFileSync(`${outFile}.meta.json`, JSON.stringify({day, notes: fresh.length}));
+  fs.writeFileSync(`${outFile}.meta.json`, JSON.stringify({day, title: batch.length === 1 ? batch[0].fm.title : `${batch.length} notes`}));
 } else {
   process.stdout.write(post);
 }
 if (args.includes('--clip')) execFileSync('pbcopy', {input: post});
+if (!dry) {
+  state.posts.push({day, date: new Date().toISOString().slice(0, 10), notes: batch.map((n) => n.rel)});
+  fs.mkdirSync(path.dirname(STATE_FILE), {recursive: true});
+  fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2) + '\n');
+}

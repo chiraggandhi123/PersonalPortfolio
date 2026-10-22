@@ -1,0 +1,14 @@
+{
+  "posts": [
+    {
+      "day": 1,
+      "date": "2026-10-22",
+      "notes": [
+        "01-llm-basics/01-what-is-an-llm.md",
+        "01-llm-basics/02-transformers-attention.md",
+        "01-llm-basics/03-tokens-context-windows-cost.md",
+        "01-llm-basics/04-embeddings.md"
+      ]
+    }
+  ]
+}
