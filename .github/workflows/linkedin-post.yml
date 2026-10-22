@@ -1,0 +1,51 @@
+# Every morning, drafts a LinkedIn post from the notes pushed in the last 24h
+# and opens it as an issue (with an @mention, so the GitHub app notifies you).
+# Nothing is posted to LinkedIn: copy the text from the issue, post it, close the issue.
+name: Daily LinkedIn post draft
+
+on:
+  schedule:
+    - cron: '30 3 * * *'   # 03:30 UTC = 09:00 IST
+  workflow_dispatch:
+    inputs:
+      hours:
+        description: 'Look back this many hours'
+        default: '24'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # full history: the script reads git log
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Draft post
+        run: node scripts/linkedin-post.mjs --hours "${{ inputs.hours || '24' }}" --out post.md
+
+      - name: Open review issue
+        if: hashFiles('post.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          DAY=$(node -p "require('./post.md.meta.json').day")
+          {
+            echo "@${{ github.repository_owner }} your LinkedIn draft is ready. Edit if you like, post it, then close this issue."
+            echo
+            echo "---"
+            echo
+            cat post.md
+          } > body.md
+          gh label create linkedin-post --color 0A66C2 --description "Daily LinkedIn draft" 2>/dev/null || true
+          gh issue create \
+            --title "LinkedIn post · Day $DAY · $(TZ=Asia/Kolkata date '+%d %b')" \
+            --label linkedin-post \
+            --body-file body.md
