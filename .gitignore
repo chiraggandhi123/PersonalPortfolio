@@ -8,3 +8,4 @@ build/
 .playwright-mcp/
 Server/config.js
 npm-debug.log*
+.env*
