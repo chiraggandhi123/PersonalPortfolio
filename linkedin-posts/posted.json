@@ -2,7 +2,7 @@
   "posts": [
     {
       "day": 1,
-      "date": "2026-10-22",
+      "date": "2026-10-23",
       "notes": [
         "01-llm-basics/01-what-is-an-llm.md",
         "01-llm-basics/02-transformers-attention.md",

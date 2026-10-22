@@ -194,7 +194,7 @@ if (outFile) {
 }
 if (args.includes('--clip')) execFileSync('pbcopy', {input: post});
 if (!dry) {
-  state.posts.push({day, date: new Date().toISOString().slice(0, 10), notes: batch.map((n) => n.rel)});
+  state.posts.push({day, date: new Date().toLocaleDateString('en-CA', {timeZone: 'Asia/Kolkata'}), notes: batch.map((n) => n.rel)});
   fs.mkdirSync(path.dirname(STATE_FILE), {recursive: true});
   fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2) + '\n');
 }
