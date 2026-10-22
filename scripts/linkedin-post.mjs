@@ -11,6 +11,7 @@
 //   node scripts/linkedin-post.mjs --dry          # print only, record nothing
 //   node scripts/linkedin-post.mjs --out post.md  # write the post to a file
 //   node scripts/linkedin-post.mjs --clip         # also copy to clipboard (macOS)
+//   node scripts/linkedin-post.mjs --resend       # rebuild the last recorded post, record nothing
 //
 // When every written note has been posted, writes a reminder naming the next
 // note to write (to <out>.reminder.md) instead of a post.
@@ -119,8 +120,16 @@ try {
 const posted = new Set(state.posts.flatMap((p) => p.notes));
 
 const queue = notes.filter((n) => n.written && !posted.has(n.rel));
-const batch = queue.slice(0, count);
-const nextUp = queue[count] ?? notes.find((n) => !n.written);
+// --resend rebuilds the last recorded post instead of taking new notes.
+const resend = args.includes('--resend') ? state.posts.at(-1) : null;
+if (args.includes('--resend') && !resend) {
+  console.error('Nothing recorded yet to resend.');
+  process.exit(0);
+}
+const batch = resend
+  ? resend.notes.map((rel) => notes.find((n) => n.rel === rel)).filter(Boolean)
+  : queue.slice(0, count);
+const nextUp = (resend ? queue[0] : queue[count]) ?? notes.find((n) => !n.written);
 const writtenCount = notes.filter((n) => n.written).length;
 
 // ---------- nothing to post: remind which note to write ----------
@@ -135,7 +144,7 @@ if (batch.length === 0) {
 }
 
 // ---------- build the post ----------
-const day = state.posts.length + 1;
+const day = resend ? resend.day : state.posts.length + 1;
 const pick = (list) => list[(day - 1) % list.length];
 const hook = pick(HOOKS).replace('{day}', day);
 const progress = `📈 Progress: ${writtenCount}/${notes.length} notes written.`;
@@ -193,7 +202,7 @@ if (outFile) {
   process.stdout.write(post);
 }
 if (args.includes('--clip')) execFileSync('pbcopy', {input: post});
-if (!dry) {
+if (!dry && !resend) {
   state.posts.push({day, date: new Date().toLocaleDateString('en-CA', {timeZone: 'Asia/Kolkata'}), notes: batch.map((n) => n.rel)});
   fs.mkdirSync(path.dirname(STATE_FILE), {recursive: true});
   fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2) + '\n');

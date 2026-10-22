@@ -3,12 +3,20 @@
 # GitHub app notifies you. Nothing is posted to LinkedIn: copy the text from the
 # issue, post it, close the issue. linkedin-posts/posted.json tracks what's done.
 # If every written note is already posted, you get a "write your next note" issue instead.
+#
+# Pushing a change to posted.json yourself (e.g. after recording a post locally
+# with --count) re-sends that latest post as an issue, unless one already exists.
 name: Daily LinkedIn post draft
 
 on:
   schedule:
     - cron: '30 3 * * *'   # 03:30 UTC = 09:00 IST
   workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - linkedin-posts/posted.json
+      - .github/workflows/linkedin-post.yml
 
 permissions:
   contents: write          # commit linkedin-posts/posted.json
@@ -29,13 +37,17 @@ jobs:
           node-version: 22
 
       - name: Draft post
-        run: node scripts/linkedin-post.mjs --out post.md
+        run: node scripts/linkedin-post.mjs --out post.md ${{ github.event_name == 'push' && '--resend' || '' }}
 
       - name: Open review issue
         if: hashFiles('post.md') != ''
         run: |
           DAY=$(node -p "require('./post.md.meta.json').day")
           TITLE=$(node -p "require('./post.md.meta.json').title")
+          if gh issue list --label linkedin-post --state all --search "\"Day $DAY ·\" in:title" --json number --jq '.[0].number' | grep -q .; then
+            echo "An issue for Day $DAY already exists, skipping."
+            exit 0
+          fi
           {
             echo "@${{ github.repository_owner }} your LinkedIn draft is ready. Edit if you like, post it, then close this issue."
             echo
@@ -47,7 +59,7 @@ jobs:
           gh issue create --title "LinkedIn · Day $DAY · $TITLE" --label linkedin-post --body-file body.md
 
       - name: Record posted note
-        if: hashFiles('post.md') != ''
+        if: hashFiles('post.md') != '' && github.event_name != 'push'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
