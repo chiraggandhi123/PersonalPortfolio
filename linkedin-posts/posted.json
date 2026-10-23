@@ -9,6 +9,13 @@
         "01-llm-basics/03-tokens-context-windows-cost.md",
         "01-llm-basics/04-embeddings.md"
       ]
+    },
+    {
+      "day": 2,
+      "date": "2026-10-23",
+      "notes": [
+        "01-llm-basics/05-the-model-landscape.md"
+      ]
     }
   ]
 }
