@@ -8,6 +8,8 @@ Build a Telegram bot that chats using an LLM and **remembers each user's convers
 
 **Skills practiced:** chat history, per-user state, system prompts, history trimming, async Python, secrets handling.
 
+**Source code:** [ai-projects/telegram-chatbot](https://github.com/chiraggandhi123/ai-projects/tree/main/telegram-chatbot) on GitHub.
+
 ## Architecture
 
 ```
@@ -29,14 +31,14 @@ The key idea: one history **per `chat_id`**, so users don't see each other's con
 2. Install:
 
 ```bash
-pip install python-telegram-bot anthropic python-dotenv
+pip install python-telegram-bot openai python-dotenv
 ```
 
 3. `.env` (and add `.env` to `.gitignore`):
 
 ```
 TELEGRAM_BOT_TOKEN=123456:ABC...
-ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-...
 ```
 
 ## Code — `bot.py`
@@ -45,15 +47,15 @@ ANTHROPIC_API_KEY=sk-ant-...
 import os
 from collections import defaultdict
 
-import anthropic
+import openai
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 
 load_dotenv()
-client = anthropic.AsyncAnthropic()
+client = openai.AsyncOpenAI()
 
-MODEL = "claude-haiku-5-5"        # fast + cheap is fine for chat
+MODEL = "gpt-4o-mini"            # fast + cheap is fine for chat
 SYSTEM = "You are a helpful, friendly assistant on Telegram. Keep replies short."
 MAX_MESSAGES = 20
 
@@ -83,18 +85,17 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await context.bot.send_chat_action(chat_id, "typing")
     try:
-        response = await client.messages.create(
+        response = await client.chat.completions.create(
             model=MODEL,
-            max_tokens=1024,
-            system=SYSTEM,
-            messages=trimmed(history),
+            max_completion_tokens=1024,
+            messages=[{"role": "system", "content": SYSTEM}, *trimmed(history)],
         )
-    except anthropic.APIError:
+    except openai.APIError:
         history.pop()
         await update.message.reply_text("Sorry, something went wrong. Try again.")
         return
 
-    reply = response.content[0].text
+    reply = response.choices[0].message.content
     history.append({"role": "assistant", "content": reply})
     await update.message.reply_text(reply)
 

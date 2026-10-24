@@ -8,6 +8,8 @@ Build a tool that takes **an article URL, pasted text, or a PDF** and returns a 
 
 **Skills practiced:** token counting, context limits, chunking, map-reduce prompting, temperature choice, faithfulness (avoiding hallucinated summaries), a simple UI.
 
+**Source code:** [ai-projects/content-summarizer](https://github.com/chiraggandhi123/ai-projects/tree/main/content-summarizer) on GitHub.
+
 ## Architecture
 
 ```
@@ -28,23 +30,26 @@ extract text ──► count tokens ──┬── fits? ──► single summa
 ## Setup
 
 ```bash
-pip install anthropic python-dotenv trafilatura pypdf streamlit
+pip install openai tiktoken python-dotenv trafilatura pypdf streamlit
 ```
 
 - `trafilatura` — pulls the main article text out of a webpage (drops nav, ads).
 - `pypdf` — extracts text from PDFs.
+- `tiktoken` — counts tokens locally the same way OpenAI models do.
 
 ## Code — `summarize.py`
 
 ```python
-import anthropic
+import openai
+import tiktoken
 import trafilatura
 from dotenv import load_dotenv
 from pypdf import PdfReader
 
 load_dotenv()
-client = anthropic.Anthropic()
-MODEL = "claude-haiku-5-5"
+client = openai.OpenAI()
+MODEL = "gpt-4o-mini"
+ENCODING = tiktoken.encoding_for_model(MODEL)
 CHUNK_TOKENS = 20_000          # well under the context window
 CHARS_PER_TOKEN = 4            # rough estimate for chunking
 
@@ -60,13 +65,13 @@ def from_pdf(file) -> str:
 
 # ---------- LLM ----------
 def llm(prompt: str, max_tokens: int = 1024) -> str:
-    resp = client.messages.create(
+    resp = client.chat.completions.create(
         model=MODEL,
-        max_tokens=max_tokens,
+        max_completion_tokens=max_tokens,
         temperature=0.2,       # faithful, not creative
         messages=[{"role": "user", "content": prompt}],
     )
-    return resp.content[0].text
+    return resp.choices[0].message.content
 
 def summarize_once(text: str, style: str) -> str:
     return llm(f"""Summarize the document below as {style}.
@@ -86,9 +91,7 @@ def chunk(text: str, size_tokens: int = CHUNK_TOKENS, overlap_tokens: int = 500)
         start += size - overlap
 
 def summarize(text: str, style: str = "5 concise bullet points") -> str:
-    tokens = client.messages.count_tokens(
-        model=MODEL, messages=[{"role": "user", "content": text}]
-    ).input_tokens
+    tokens = len(ENCODING.encode(text))
 
     if tokens <= CHUNK_TOKENS:
         return summarize_once(text, style)
@@ -138,7 +141,7 @@ Run: `streamlit run app.py`
 ## Stretch goals
 
 - [ ] Split chunks on paragraphs/headings instead of raw characters.
-- [ ] Run map calls **in parallel** with `AsyncAnthropic` + `asyncio.gather`.
+- [ ] Run map calls **in parallel** with `AsyncOpenAI` + `asyncio.gather`.
 - [ ] **Stream** the final summary into the UI.
 - [ ] **Structured output** — return `{title, tl_dr, key_points[], action_items[]}` as JSON (validate with Pydantic).
 - [ ] **YouTube** — summarize from a video transcript.
