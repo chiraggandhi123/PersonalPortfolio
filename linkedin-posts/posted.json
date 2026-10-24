@@ -16,6 +16,13 @@
       "notes": [
         "01-llm-basics/05-the-model-landscape.md"
       ]
+    },
+    {
+      "day": 3,
+      "date": "2026-10-24",
+      "notes": [
+        "01-llm-basics/06-sampling-temperature-top-p.md"
+      ]
     }
   ]
 }
