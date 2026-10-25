@@ -23,6 +23,13 @@
       "notes": [
         "01-llm-basics/06-sampling-temperature-top-p.md"
       ]
+    },
+    {
+      "day": 4,
+      "date": "2026-10-25",
+      "notes": [
+        "01-llm-basics/07-hallucinations-limitations.md"
+      ]
     }
   ]
 }
