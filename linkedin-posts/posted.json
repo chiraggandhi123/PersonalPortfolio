@@ -30,6 +30,13 @@
       "notes": [
         "01-llm-basics/07-hallucinations-limitations.md"
       ]
+    },
+    {
+      "day": 5,
+      "date": "2026-10-26",
+      "notes": [
+        "01-llm-basics/08-your-first-chatbot.md"
+      ]
     }
   ]
 }
