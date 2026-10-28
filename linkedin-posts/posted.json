@@ -44,6 +44,13 @@
       "notes": [
         "01-llm-basics/projects/01-telegram-chatbot.md"
       ]
+    },
+    {
+      "day": 7,
+      "date": "2026-10-28",
+      "notes": [
+        "01-llm-basics/projects/02-ai-powered-content-summarization.md"
+      ]
     }
   ]
 }
