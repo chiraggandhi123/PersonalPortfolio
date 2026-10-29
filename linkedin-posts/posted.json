@@ -51,6 +51,13 @@
       "notes": [
         "01-llm-basics/projects/02-ai-powered-content-summarization.md"
       ]
+    },
+    {
+      "day": 8,
+      "date": "2026-10-29",
+      "notes": [
+        "02-calling-models/01-chat-apis.md"
+      ]
     }
   ]
 }
