@@ -58,6 +58,13 @@
       "notes": [
         "02-calling-models/01-chat-apis.md"
       ]
+    },
+    {
+      "day": 9,
+      "date": "2026-10-30",
+      "notes": [
+        "02-calling-models/02-messages-roles.md"
+      ]
     }
   ]
 }
