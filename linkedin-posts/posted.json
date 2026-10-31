@@ -65,6 +65,13 @@
       "notes": [
         "02-calling-models/02-messages-roles.md"
       ]
+    },
+    {
+      "day": 10,
+      "date": "2026-10-31",
+      "notes": [
+        "02-calling-models/03-streaming-responses.md"
+      ]
     }
   ]
 }
