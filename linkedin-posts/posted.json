@@ -72,6 +72,13 @@
       "notes": [
         "02-calling-models/03-streaming-responses.md"
       ]
+    },
+    {
+      "day": 11,
+      "date": "2026-11-01",
+      "notes": [
+        "02-calling-models/04-structured-outputs.md"
+      ]
     }
   ]
 }
