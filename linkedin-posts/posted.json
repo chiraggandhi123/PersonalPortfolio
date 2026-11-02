@@ -79,6 +79,13 @@
       "notes": [
         "02-calling-models/04-structured-outputs.md"
       ]
+    },
+    {
+      "day": 12,
+      "date": "2026-11-02",
+      "notes": [
+        "02-calling-models/05-tool-function-calling.md"
+      ]
     }
   ]
 }
