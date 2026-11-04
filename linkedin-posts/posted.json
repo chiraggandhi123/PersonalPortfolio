@@ -93,6 +93,13 @@
       "notes": [
         "02-calling-models/06-errors-retries-rate-limits.md"
       ]
+    },
+    {
+      "day": 14,
+      "date": "2026-11-04",
+      "notes": [
+        "02-calling-models/07-tracking-tokens-cost.md"
+      ]
     }
   ]
 }
