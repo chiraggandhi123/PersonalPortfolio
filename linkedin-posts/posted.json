@@ -100,6 +100,13 @@
       "notes": [
         "02-calling-models/07-tracking-tokens-cost.md"
       ]
+    },
+    {
+      "day": 15,
+      "date": "2026-11-05",
+      "notes": [
+        "02-calling-models/08-running-models-locally.md"
+      ]
     }
   ]
 }
