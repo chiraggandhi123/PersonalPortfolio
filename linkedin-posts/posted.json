@@ -107,6 +107,13 @@
       "notes": [
         "02-calling-models/08-running-models-locally.md"
       ]
+    },
+    {
+      "day": 16,
+      "date": "2026-11-06",
+      "notes": [
+        "02-calling-models/09-provider-agnostic-clients.md"
+      ]
     }
   ]
 }
