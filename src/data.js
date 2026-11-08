@@ -18,7 +18,7 @@ export const profile = {
   photo: null,
   email: "chiraggandhi70726@gmail.com",
   resume: "/resume.pdf",
-  site: "https://chiraggandhi.vercel.app",
+  site: "https://chiraggandhi-portfolio.vercel.app",
   // The Docusaurus notes site in notes/ (deploy it as the Vercel project "chiraggandhi-notes").
   notes: "https://chiraggandhi-notes.vercel.app",
 };

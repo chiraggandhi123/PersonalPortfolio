@@ -6,7 +6,7 @@ import notesIndexPlugin from './plugins/notes-index.js';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
-const PORTFOLIO = 'https://chiraggandhi.vercel.app';
+const PORTFOLIO = 'https://chiraggandhi-portfolio.vercel.app';
 const GITHUB = 'https://github.com/chiraggandhi123';
 const LINKEDIN = 'https://linkedin.com/in/chiraggandhi123';
 

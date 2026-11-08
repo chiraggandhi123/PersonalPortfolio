@@ -42,5 +42,5 @@ Project notes add an architecture diagram, setup, code, stretch goals, and a "Wh
 
 ## Find me
 
-- Portfolio: [chiraggandhi.vercel.app](https://chiraggandhi.vercel.app)
+- Portfolio: [chiraggandhi-portfolio.vercel.app](https://chiraggandhi-portfolio.vercel.app)
 - Email: chiraggandhi70726@gmail.com
