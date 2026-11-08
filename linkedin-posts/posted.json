@@ -114,6 +114,13 @@
       "notes": [
         "02-calling-models/09-provider-agnostic-clients.md"
       ]
+    },
+    {
+      "day": 17,
+      "date": "2026-11-08",
+      "notes": [
+        "00-python-for-ai/01-python-setup.md"
+      ]
     }
   ]
 }
