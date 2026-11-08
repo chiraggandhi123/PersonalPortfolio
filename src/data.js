@@ -225,6 +225,22 @@ export const projects = [
     visual: "router",
   },
   {
+    title: "AI Resume Summary",
+    tagline: "LLM-written summaries, +20% quality score",
+    date: "SWE · Naukri Campus",
+    tags: ["LLM", "React", "Node.js"],
+    kind: "work",
+    visual: "resume",
+  },
+  {
+    title: "Covid-19 Detection",
+    tagline: "Siamese ResNet across 4 chest X-ray classes",
+    date: "Side project",
+    tags: ["Python", "Deep Learning"],
+    kind: "side",
+    visual: "siamese",
+  },
+  {
     title: "React 18 Migration",
     tagline: "Page load −40% · interaction latency −15%",
     date: "Lead Engineer · Naukri Campus",
@@ -239,14 +255,6 @@ export const projects = [
     tags: ["Performance", "INP", "CLS"],
     kind: "work",
     visual: "vitals",
-  },
-  {
-    title: "AI Resume Summary",
-    tagline: "LLM-written summaries, +20% quality score",
-    date: "SWE · Naukri Campus",
-    tags: ["LLM", "React", "Node.js"],
-    kind: "work",
-    visual: "resume",
   },
   {
     title: "RN vs Flutter Benchmark",
@@ -282,14 +290,6 @@ export const projects = [
     kind: "side",
     visual: "feed",
     link: "https://github.com/chiraggandhi123/fullstack-twitter-clone",
-  },
-  {
-    title: "Covid-19 Detection",
-    tagline: "Siamese ResNet across 4 chest X-ray classes",
-    date: "Side project",
-    tags: ["Python", "Deep Learning"],
-    kind: "side",
-    visual: "siamese",
   },
 ];
 
