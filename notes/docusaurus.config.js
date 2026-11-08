@@ -42,6 +42,9 @@ const config = {
     'https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap',
   ],
 
+  // Vercel Web Analytics: visitor counts show in the Vercel dashboard (Analytics tab).
+  scripts: [{src: '/_vercel/insights/script.js', defer: true}],
+
   // Feeds the home page's stage list (src/pages/index.js).
   plugins: [notesIndexPlugin],
 
