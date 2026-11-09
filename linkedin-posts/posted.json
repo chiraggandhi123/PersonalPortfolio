@@ -121,6 +121,13 @@
       "notes": [
         "00-python-for-ai/01-python-setup.md"
       ]
+    },
+    {
+      "day": 18,
+      "date": "2026-11-09",
+      "notes": [
+        "00-python-for-ai/02-variables-data-types-f-strings.md"
+      ]
     }
   ]
 }
