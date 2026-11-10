@@ -128,6 +128,13 @@
       "notes": [
         "00-python-for-ai/02-variables-data-types-f-strings.md"
       ]
+    },
+    {
+      "day": 19,
+      "date": "2026-11-10",
+      "notes": [
+        "00-python-for-ai/03-data-structures.md"
+      ]
     }
   ]
 }
