@@ -135,6 +135,13 @@
       "notes": [
         "00-python-for-ai/03-data-structures.md"
       ]
+    },
+    {
+      "day": 20,
+      "date": "2026-11-11",
+      "notes": [
+        "00-python-for-ai/04-control-flow-comprehensions.md"
+      ]
     }
   ]
 }
