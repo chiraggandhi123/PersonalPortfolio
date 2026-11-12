@@ -142,6 +142,13 @@
       "notes": [
         "00-python-for-ai/04-control-flow-comprehensions.md"
       ]
+    },
+    {
+      "day": 21,
+      "date": "2026-11-12",
+      "notes": [
+        "00-python-for-ai/05-functions-arguments.md"
+      ]
     }
   ]
 }
