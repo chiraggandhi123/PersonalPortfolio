@@ -149,6 +149,13 @@
       "notes": [
         "00-python-for-ai/05-functions-arguments.md"
       ]
+    },
+    {
+      "day": 22,
+      "date": "2026-11-13",
+      "notes": [
+        "00-python-for-ai/06-object-oriented-python.md"
+      ]
     }
   ]
 }
