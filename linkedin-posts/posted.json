@@ -184,6 +184,13 @@
       "notes": [
         "00-python-for-ai/10-api-keys-env.md"
       ]
+    },
+    {
+      "day": 27,
+      "date": "2026-11-18",
+      "notes": [
+        "00-python-for-ai/11-calling-an-api.md"
+      ]
     }
   ]
 }
