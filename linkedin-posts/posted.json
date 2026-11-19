@@ -191,6 +191,13 @@
       "notes": [
         "00-python-for-ai/11-calling-an-api.md"
       ]
+    },
+    {
+      "day": 28,
+      "date": "2026-11-19",
+      "notes": [
+        "00-python-for-ai/12-async-basics-youll-see-in-agents.md"
+      ]
     }
   ]
 }
