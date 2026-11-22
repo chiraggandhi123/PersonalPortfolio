@@ -212,6 +212,13 @@
       "notes": [
         "00-python-for-ai/14-build-a-ui-fast.md"
       ]
+    },
+    {
+      "day": 31,
+      "date": "2026-11-22",
+      "notes": [
+        "00-python-for-ai/projects/01-personal-ai-voice-assistant.md"
+      ]
     }
   ]
 }
