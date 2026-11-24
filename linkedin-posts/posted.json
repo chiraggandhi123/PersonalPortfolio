@@ -226,6 +226,13 @@
       "notes": [
         "00-python-for-ai/projects/02-automated-content-automation.md"
       ]
+    },
+    {
+      "day": 33,
+      "date": "2026-11-24",
+      "notes": [
+        "03-prompting-llm-apps/01-prompt-engineering-basics.md"
+      ]
     }
   ]
 }
