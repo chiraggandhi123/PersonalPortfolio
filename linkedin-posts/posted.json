@@ -233,6 +233,13 @@
       "notes": [
         "03-prompting-llm-apps/01-prompt-engineering-basics.md"
       ]
+    },
+    {
+      "day": 34,
+      "date": "2026-11-25",
+      "notes": [
+        "03-prompting-llm-apps/02-zero-shot-few-shot-chain-of-thought.md"
+      ]
     }
   ]
 }
