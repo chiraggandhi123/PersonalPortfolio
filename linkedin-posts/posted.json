@@ -240,6 +240,13 @@
       "notes": [
         "03-prompting-llm-apps/02-zero-shot-few-shot-chain-of-thought.md"
       ]
+    },
+    {
+      "day": 35,
+      "date": "2026-11-26",
+      "notes": [
+        "03-prompting-llm-apps/03-system-prompts-personas.md"
+      ]
     }
   ]
 }
