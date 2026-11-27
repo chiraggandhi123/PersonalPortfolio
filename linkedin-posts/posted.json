@@ -247,6 +247,13 @@
       "notes": [
         "03-prompting-llm-apps/03-system-prompts-personas.md"
       ]
+    },
+    {
+      "day": 36,
+      "date": "2026-11-27",
+      "notes": [
+        "03-prompting-llm-apps/04-prompt-templates-versioning.md"
+      ]
     }
   ]
 }
