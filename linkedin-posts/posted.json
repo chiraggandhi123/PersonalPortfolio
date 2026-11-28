@@ -254,6 +254,13 @@
       "notes": [
         "03-prompting-llm-apps/04-prompt-templates-versioning.md"
       ]
+    },
+    {
+      "day": 37,
+      "date": "2026-11-28",
+      "notes": [
+        "03-prompting-llm-apps/05-parsing-validating-output.md"
+      ]
     }
   ]
 }
